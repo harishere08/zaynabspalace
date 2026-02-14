@@ -1,0 +1,435 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaynab's Palace</title>
+    
+    <!-- Google Fonts - English + Urdu Nastaleeq -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Great+Vibes&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ... your existing CSS ... */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Great+Vibes&display=swap');
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            height: 100vh; overflow: hidden;
+            background: linear-gradient(to bottom, #0f2b1e, #1a3a28);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; transition: background 3s ease;
+        }
+
+        .background { position: absolute; inset: 0; background: url('background.jpeg') center / 100% auto no-repeat;
+        filter: brightness(0.75) contrast(1.1); z-index: 0; transition: opacity 3s ease;
+        background-color: #0f2b1e;
+         }
+
+        .scene { position: relative; width: 100%; height: 100%; z-index: 1; }
+
+        /* ==================== GATE ==================== */
+        .gate-wrapper { position: relative; width: clamp(320px,85vw,520px); height: 640px; z-index: 2; margin:0 auto; transition: opacity 2.8s ease; }
+        .arch { position: absolute; top: -92px; left: 50%; transform: translateX(-50%); width: 112%; height: 170px; border: 24px solid #d4af37; border-bottom: none; border-radius: 50% 50% 0 0; box-shadow: 0 12px 25px rgba(0,0,0,0.45), inset 0 18px 35px rgba(255,215,0,0.35); z-index: 10; pointer-events: none; }
+        .arch-inner { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 88%; height: 125px; border: 13px solid #b8973e; border-bottom: none; border-radius: 50% 50% 0 0; z-index: 11; }
+        .nameplate { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); z-index: 15; background: #2c1f0f; padding: 14px 42px; border: 7px solid #d4af37; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.6), inset 0 0 25px #d4af37; }
+        .nameplate-inner { color: #f0d47c; font-family: 'Playfair Display', serif; font-size: clamp(1.25rem,5vw,2.1rem); letter-spacing: 4px; text-transform: uppercase; white-space: nowrap; text-shadow: 3px 3px 8px rgba(0,0,0,0.8); }
+        .doors-container { position: absolute; top: 118px; left: 0; width: 100%; height: 500px; perspective: 1600px; z-index: 5; }
+        .door { position: absolute; top: 0; width: 50%; height: 100%; background: linear-gradient(135deg,#e8c14a,#d4af37,#c9a227); border: 12px solid #8b5f2a; border-radius: 8px 8px 4px 4px; overflow: hidden; box-shadow: 8px 15px 30px rgba(0,0,0,0.6), inset 0 0 40px rgba(255,215,0,0.4); transition: transform 2.8s cubic-bezier(0.25,0.1,0.25,1); z-index: 6; }
+        .left-door { left: 0; transform-origin: left center; }
+        .right-door { right: 0; transform-origin: right center; }
+        .door-panel { position: relative; width: 100%; height: 100%; }
+        .vertical-bars { position: absolute; inset: 12px 18px; display: flex; justify-content: space-between; padding: 0 8px; }
+        .bar { width: 7px; height: 92%; background: linear-gradient(#b38a2e,#e8c14a,#b38a2e); border-radius: 4px; box-shadow: 0 0 8px #fff, inset 0 0 6px rgba(0,0,0,0.4); }
+        .horizontal-bar { position: absolute; left: 12px; right: 12px; height: 10px; background: linear-gradient(#b38a2e,#e8c14a); box-shadow: 0 0 8px #fff; border-radius: 4px; }
+        .horizontal-bar.top { top: 35px; } .horizontal-bar.middle { top: 48%; } .horizontal-bar.bottom { bottom: 35px; }
+        .decoration { position: absolute; font-size: 42px; z-index: 12; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); pointer-events: none; }
+        .flower1 { top: 22px; left: -38px; transform: rotate(-25deg); }
+        .flower2 { top: 19px; right: -32px; transform: rotate(32deg); }
+        .weed1 { bottom: 92px; left: -45px; font-size: 38px; transform: rotate(18deg); }
+        .weed2 { bottom: 85px; right: -40px; font-size: 36px; transform: rotate(-22deg); }
+        .lock-container { position: absolute; top: 58%; left: 50%; transform: translate(-50%,-50%); z-index: 20; cursor: pointer; transition: transform 0.3s ease; }
+        .lock-container:hover { transform: translate(-50%,-50%) scale(1.12); }
+        .lock { width: 62px; height: 72px; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5)); }
+        .welcome { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.6); text-align: center; opacity: 0; transition: all 2s cubic-bezier(0.34,1.56,0.64,1); z-index: 8; color: #f0d47c; text-shadow: 0 0 30px #000; pointer-events: none; }
+        .welcome h1 { font-family: 'Great Vibes', cursive; font-size: clamp(2.8rem,9vw,6rem); margin-bottom: 12px; letter-spacing: 4px; }
+        .signature { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); color: #d4af37; font-family: 'Playfair Display', serif; font-size: clamp(0.95rem,3.2vw,1.15rem); letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 3; opacity: 0.9; white-space: nowrap; }
+
+        /* ==================== 2nd INTERFACE (Palace) ==================== */
+        #back-btn { position: absolute; top: 18px; left: 18px; z-index: 30; background: #2c1f0f; color: #d4af37; border: 2.5px solid #d4af37; padding: 8px 18px; border-radius: 50px; font-family: 'Cinzel', serif; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; transition: all 0.3s ease; }
+        #back-btn:hover { background: #d4af37; color: #2c1f0f; transform: scale(1.08); }
+        #firefly-canvas { position: absolute; inset: 0; z-index: 20; pointer-events: none; display: none; }
+        .palace-content { position: absolute; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 85px 35px 125px; gap: 38px; color: #f0d47c; transition: opacity 1.8s ease; }
+        .flower-decor { position: absolute; font-size: 52px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)); pointer-events: none; z-index: 26; opacity: 0.85; }
+        .flower-top-left { top: 22%; left: 10%; transform: rotate(-15deg); }
+        .flower-top-right { top: 19%; right: 3%; transform: rotate(22deg); }
+        .flower-bottom-left { bottom: 28%; left: 4%; transform: rotate(35deg); }
+        .flower-bottom-right { bottom: 25%; right: 9%; transform: rotate(-28deg); }
+        .royal-header { font-family: 'Noto Nastaliq Urdu', serif; font-size: clamp(1.4rem, 4.2vw, 2.3rem)); letter-spacing: 5px; text-shadow: 2px 2px 0 #b8973e, -3px -3px 0 #b8973e, 0 0 30px #000, 0 0 40px rgba(212,175,55,0.4); }
+        .poetry {
+    font-family: 'Noto Nastaliq Urdu', serif;
+    font-size: clamp(1.45rem, 4.8vw, 2.1rem);
+    line-height: 2.1;
+    max-width: 680px;
+    text-shadow: 2px 2px 8px #000;
+    direction: rtl;           /* Important for Urdu */
+    text-align: right;        /* Important for Urdu */
+    margin-bottom: 70px;
+}
+        .proceed-btn { background: linear-gradient(#e8c14a,#d4af37); color: #2c1f0f; border: none; padding: 18px 68px; font-family: 'Playfair Display', serif; font-size: 1.45rem; letter-spacing: 3px; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 25px rgba(255,255,255,0.4); transition: all 0.4s ease; }
+        .proceed-btn:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px rgba(212,175,55,0.7); }
+
+        /* ==================== 3rd MENU + NEW INTERFACES ==================== */
+        .third-content { position: absolute; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 32px; transition: opacity 1.6s ease; }
+        .menu-container { display: flex; flex-direction: column; gap: 26px; width: 300px; max-width: 82vw; }
+        .menu-btn { background: linear-gradient(#e8c14a,#d4af37); color: #2c1f0f; border: none; padding: 19px 40px; font-family: 'Cinzel', serif; font-size: 1.38rem; letter-spacing: 2.5px; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.55); transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .menu-btn:hover { transform: scale(1.09) translateY(-6px); box-shadow: 0 14px 38px rgba(212,175,55,0.65); }
+
+        .gallery-content, .pens-content, .game-content { position: absolute; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; padding: 90px 20px 120px; overflow-y: auto; color: #f0d47c; transition: opacity 1.6s ease; }
+        .section-header { font-family: 'Cinzel', serif; font-size: clamp(2.2rem,7vw,3.8rem); margin-bottom: 40px; letter-spacing: 3px; text-shadow: 3px 3px 0 #b8973e, -3px -3px 0 #b8973e, 0 0 30px #000, 0 0 40px rgba(212,175,55,0.4); }
+        .gallery-grid, .pens-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; max-width: 820px; width: 100%; }
+        .gallery-grid img, .pens-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 16px; border: 4px solid #d4af37; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: transform 0.3s ease; }
+        .gallery-grid img:hover, .pens-grid img:hover { transform: scale(1.05); }
+
+        .game-question { font-family: 'Cinzel', serif; font-size: clamp(2.5rem,8vw,4.5rem); margin-bottom: 60px; text-shadow: 3px 3px 0 #b8973e, 0 0 30px #000; text-align: center; }
+        .game-buttons { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+        .yes-btn, .no-btn { padding: 22px 60px; font-family: 'Cinzel', serif; font-size: 1.65rem; letter-spacing: 1px; border-radius: 50px; cursor: pointer; border: none; box-shadow: 0 8px 25px rgba(0,0,0,0.5); transition: all 0.3s ease; }
+        .yes-btn { background: linear-gradient(135deg,#4ade80,#22c55e); color: #fff; }
+        .yes-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(34,197,94,0.6); }
+        .no-btn { background: linear-gradient(135deg,#f87171,#ef4444); color: #fff; position: relative; }
+        .success-note { display: none; text-align: center; animation: shine 4s infinite alternate; }
+        .success-note h2 { font-family: 'Great Vibes', cursive; font-size: clamp(3rem,10vw,5.5rem); margin-bottom: 20px; color: #f0d47c; }
+        @keyframes shine { 0%{text-shadow:0 0 20px #ffd700,0 0 40px #ffd700} 50%{text-shadow:0 0 30px #ffec8b,0 0 60px #ffec8b,0 0 80px #ffd700} 100%{text-shadow:0 0 25px #ffd700,0 0 50px #ffd700} }
+
+        @media (max-width: 480px) {
+            .gallery-grid, .pens-grid { grid-template-columns: 1fr; }
+            .game-buttons { gap: 30px; }
+            .yes-btn, .no-btn { padding: 18px 45px; font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="scene">
+
+        <!-- GATE -->
+        <div class="gate-wrapper" id="gate-wrapper">
+            <div class="arch"></div>
+            <div class="arch-inner"></div>
+            <div class="nameplate"><div class="nameplate-inner">Zaynab's Palace</div></div>
+            <div class="decoration flower1">🌺</div>
+            <div class="decoration flower2">🌸</div>
+            <div class="decoration weed1">🌿</div>
+            <div class="decoration weed2">🌿</div>
+
+            <div class="doors-container" id="doors">
+                <div class="door left-door" id="left-door">
+                    <div class="door-panel">
+                        <div class="vertical-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                        <div class="horizontal-bar top"></div>
+                        <div class="horizontal-bar middle"></div>
+                        <div class="horizontal-bar bottom"></div>
+                    </div>
+                </div>
+                <div class="door right-door" id="right-door">
+                    <div class="door-panel">
+                        <div class="vertical-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                        <div class="horizontal-bar top"></div>
+                        <div class="horizontal-bar middle"></div>
+                        <div class="horizontal-bar bottom"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lock-container" id="lock">
+                <svg class="lock" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M55 85 L55 55 Q55 30 80 30 Q105 30 130 55 L130 85" fill="transparent" stroke="#2c2c2c" stroke-width="22" stroke-linejoin="round"/>
+                    <rect x="40" y="80" rx="12" ry="12" width="120" height="105" fill="#e8c14a" stroke="#2c2c2c" stroke-width="18"/>
+                    <path d="M92 105 L92 130" fill="transparent" stroke="#2c2c2c" stroke-width="8"/>
+                    <circle cx="92" cy="142" r="9" fill="#2c2c2c"/>
+                </svg>
+            </div>
+
+            <div class="welcome" id="welcome">
+                <h1>Welcome</h1>
+                <p>to Zaynab's Palace</p>
+            </div>
+        </div>
+
+        <canvas id="firefly-canvas"></canvas>
+        <button id="back-btn">Back</button>
+
+        <!-- 2nd Interface -->
+        <div class="palace-content" id="palace-content">
+            <span class="flower-decor flower-top-left">🌹</span>
+            <span class="flower-decor flower-top-right">🌷</span>
+            <span class="flower-decor flower-bottom-left">💐</span>
+            <span class="flower-decor flower-bottom-right">🌺</span>
+<h1 class="royal-header" style="font-family: 'Noto Nastaliq Urdu', serif;">اے مرے دل کے شہنشاہ 
+اے مری آنکھوں کے نور</h1>
+           <div class="poetry">
+   ''آپ کی یاد آتی رہی رات بھر''<br>
+   چاندنی دل دکھاتی رہی رات بھر<br><br>
+    
+   گاہ جلتی ہوئی گاہ بجھتی ہوئی<br>
+  شمع غم جھلملاتی رہی رات بھر<br><br>
+    
+    ایک امید سے دل بہلتا رہا<br>
+   اک تمنا ستاتی رہی رات بھر
+</div>
+            <button id="proceed-btn" class="proceed-btn">Proceed</button>
+        </div>
+
+        <!-- 3rd Menu -->
+        <div class="third-content" id="third-content">
+            <div class="menu-container">
+                <button class="menu-btn" id="gallery-btn">💞Palace Gallery📸</button>
+                <button class="menu-btn" id="pens-btn">💞From our pens✒️</button>
+                <button class="menu-btn" id="game-btn">💞Love game🎮</button>
+            </div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="gallery-content" id="gallery-content">
+            <h1 class="section-header">Gallery</h1>
+            <div class="gallery-grid">
+                <img src="zaynab1.jpg" alt="">
+                <img src="zaynab2.jpg" alt="">
+                <img src="zaynab3.jpg" alt="">
+                <img src="zaynab4.jpg" alt="">
+                <img src="zaynab5.jpg" alt="">
+                <img src="zaynab6.jpg" alt="">
+                <img src="zaynab8.jpg" alt="">
+                <img src="zaynab7.jpg" alt="">
+            </div>
+        </div>
+
+        <!-- From Our Pens -->
+        <div class="pens-content" id="pens-content">
+            <h1 class="section-header">From Our Pens</h1>
+            <div class="pens-grid">
+                <img src="pen1.jpg" alt="">
+                <img src="pen2.jpg" alt="">
+                <img src="pen3.jpg" alt=""> 
+               <img src="pen4.jpg" alt=""> 
+               <img src="pen5.jpg" alt=""> 
+                <img src="pen6.jpg" alt=""> 
+                <img src="pen7.jpg" alt="">
+            </div>
+        </div>
+
+        <!-- Game -->
+        <div class="game-content" id="game-content">
+            <h1 class="game-question">Do you love me?</h1>
+            <div class="game-buttons">
+                <button class="yes-btn">Yes 💕</button>
+                <button class="no-btn" id="no-btn">No</button>
+            </div>
+            <div class="success-note" id="success-note">
+                <h2>Yes! I love you endlessly ❤️</h2>
+                <h3>You are the light of my eyes and peace of my heart, Zaynab.</h3>
+                <p>Forever yours,</p>
+                <p>Haris</p>
+            </div>
+        </div>
+
+        <div class="signature">From yours truly, Haris</div>
+    </div>
+
+    <script>
+        // Full script (same as the fixed version from before)
+        const lock = document.getElementById('lock');
+        const leftDoor = document.getElementById('left-door');
+        const rightDoor = document.getElementById('right-door');
+        const welcome = document.getElementById('welcome');
+        const bgImage = document.querySelector('.background');
+        const gateWrapper = document.getElementById('gate-wrapper');
+        const backBtn = document.getElementById('back-btn');
+        const palaceContent = document.getElementById('palace-content');
+        const fireflyCanvas = document.getElementById('firefly-canvas');
+        const proceedBtn = document.getElementById('proceed-btn');
+
+        const thirdContent = document.getElementById('third-content');
+        const galleryBtn = document.getElementById('gallery-btn');
+        const pensBtn = document.getElementById('pens-btn');
+        const gameBtn = document.getElementById('game-btn');
+
+        const galleryContent = document.getElementById('gallery-content');
+        const pensContent = document.getElementById('pens-content');
+        const gameContent = document.getElementById('game-content');
+        const yesBtn = document.querySelector('.yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const successNote = document.getElementById('success-note');
+
+        let isOpen = false;
+        let currentMode = 'landing';
+        let canvas, ctx, fireflies = [];
+        let animationFrame;
+
+        lock.addEventListener('click', () => {
+            if (isOpen) return;
+            isOpen = true;
+            leftDoor.style.transform = 'rotateY(-115deg)';
+            rightDoor.style.transform = 'rotateY(115deg)';
+            lock.style.opacity = '0';
+            lock.style.transform = 'translate(-50%,-50%) scale(0.6)';
+            setTimeout(() => { welcome.style.opacity = '1'; welcome.style.transform = 'translate(-50%,-50%) scale(1)'; }, 1400);
+            setTimeout(() => { welcome.style.opacity = '0'; startPalaceMode(); }, 3900);
+        });
+
+        function startPalaceMode() {
+            currentMode = 'palace';
+            document.body.style.background = 'linear-gradient(to bottom, #081a14, #132d23)';
+            bgImage.style.opacity = '0';
+            gateWrapper.style.opacity = '0';
+            backBtn.style.display = 'block';
+            palaceContent.style.display = 'flex';
+            palaceContent.style.opacity = '0';
+            setTimeout(() => palaceContent.style.opacity = '1', 100);
+            initFireflies();
+        }
+
+        function initFireflies() {
+            canvas = fireflyCanvas;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx = canvas.getContext('2d');
+            fireflyCanvas.style.display = 'block';
+            fireflyCanvas.style.opacity = '1';
+            fireflies = [];
+            for (let i = 0; i < 18; i++) {
+                fireflies.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height*0.75, size: Math.random()*3.5+2, speedX: (Math.random()-0.5)*0.8, speedY: (Math.random()-0.5)*0.6, angle: Math.random()*Math.PI*2, flicker: Math.random()*Math.PI*2 });
+            }
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            animateFireflies();
+        }
+        function animateFireflies() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            fireflies.forEach(f => {
+                f.x += Math.cos(f.angle)*1.2 + f.speedX;
+                f.y += Math.sin(f.angle)*0.8 + f.speedY;
+                f.angle += 0.015 + Math.random()*0.02;
+                f.flicker += 0.18;
+                if (f.x < 0 || f.x > canvas.width) f.speedX *= -1;
+                if (f.y < 0 || f.y > canvas.height) f.speedY *= -1;
+                const alpha = Math.sin(f.flicker)*0.4 + 0.6;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.shadowBlur = 22;
+                ctx.shadowColor = '#ffeb3b';
+                ctx.fillStyle = '#ffe94d';
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            });
+            animationFrame = requestAnimationFrame(animateFireflies);
+        }
+
+        galleryBtn.addEventListener('click', () => { thirdContent.style.opacity = '0'; setTimeout(() => { thirdContent.style.display = 'none'; galleryContent.style.display = 'flex'; galleryContent.style.opacity = '1'; currentMode = 'gallery'; }, 800); });
+        pensBtn.addEventListener('click', () => { thirdContent.style.opacity = '0'; setTimeout(() => { thirdContent.style.display = 'none'; pensContent.style.display = 'flex'; pensContent.style.opacity = '1'; currentMode = 'pens'; }, 800); });
+        gameBtn.addEventListener('click', () => { thirdContent.style.opacity = '0'; setTimeout(() => { thirdContent.style.display = 'none'; gameContent.style.display = 'flex'; gameContent.style.opacity = '1'; currentMode = 'game'; resetGame(); }, 800); });
+
+      // ====================== GAME SECTION (fixed) ======================
+function resetGame() {
+    document.querySelector('.game-buttons').style.display = 'flex';
+    successNote.style.display = 'none';
+    noBtn.style.position = 'relative';
+    noBtn.style.left = '';
+    noBtn.style.top = '';
+}
+
+function moveNoButton() {
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+    const maxX = window.innerWidth - btnWidth - 60;
+    const maxY = window.innerHeight - btnHeight - 140;
+    
+    const newX = Math.random() * maxX + 30;
+    const newY = Math.random() * maxY + 100;
+
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = newX + 'px';
+    noBtn.style.top = newY + 'px';
+    noBtn.style.transition = 'left 0.35s ease-out, top 0.35s ease-out';
+    noBtn.style.zIndex = '50';
+}
+
+// YES button → show love note
+yesBtn.addEventListener('click', () => {
+    document.querySelector('.game-buttons').style.display = 'none';
+    successNote.style.display = 'block';
+});
+
+// NO button → runs away (desktop + mobile)
+noBtn.addEventListener('mouseenter', moveNoButton);     // desktop hover
+noBtn.addEventListener('touchstart', (e) => {           // mobile touch
+    e.preventDefault();
+    moveNoButton();
+});
+noBtn.addEventListener('click', (e) => {                // extra safety
+    if (currentMode === 'game') {
+        e.preventDefault();
+        moveNoButton();
+    }
+});
+
+       // FIXED BACK BUTTON (now works from menu too)
+backBtn.addEventListener('click', () => {
+    if (currentMode === 'palace') {
+        // back to gate
+        isOpen = false;
+        leftDoor.style.transform = 'rotateY(0deg)';
+        rightDoor.style.transform = 'rotateY(0deg)';
+        lock.style.opacity = '1';
+        lock.style.transform = 'translate(-50%,-50%) scale(1)';
+        backBtn.style.display = 'none';
+        palaceContent.style.opacity = '0';
+        setTimeout(() => {
+            palaceContent.style.display = 'none';
+            fireflyCanvas.style.display = 'none';
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+        }, 1700);
+        document.body.style.background = 'linear-gradient(to bottom, #0f2b1e, #1a3a28)';
+        bgImage.style.opacity = '1';
+        gateWrapper.style.opacity = '1';
+        currentMode = 'landing';
+    } 
+    else if (currentMode === 'menu') {
+        // ← NEW: back from menu to poetry screen
+        thirdContent.style.opacity = '0';
+        setTimeout(() => {
+            thirdContent.style.display = 'none';
+            palaceContent.style.display = 'flex';
+            palaceContent.style.opacity = '1';
+            fireflyCanvas.style.display = 'block';
+            fireflyCanvas.style.opacity = '1';
+            initFireflies();
+            currentMode = 'palace';
+        }, 1000);
+    } 
+    else if (['gallery','pens','game'].includes(currentMode)) {
+        if (currentMode === 'game') resetGame();
+        const currentEl = document.getElementById(currentMode + '-content');
+        currentEl.style.opacity = '0';
+        setTimeout(() => {
+            currentEl.style.display = 'none';
+            thirdContent.style.display = 'flex';
+            thirdContent.style.opacity = '1';
+            currentMode = 'menu';
+        }, 1000);
+    }
+});
+
+        proceedBtn.addEventListener('click', () => {
+            palaceContent.style.opacity = '0';
+            setTimeout(() => {
+                palaceContent.style.display = 'none';
+                thirdContent.style.display = 'flex';
+                thirdContent.style.opacity = '1';
+                currentMode = 'menu';
+            }, 1600);
+        });
+
+        document.addEventListener('keydown', e => { if (e.key === 'Enter' && !isOpen) lock.click(); });
+    </script>
+</body>
+</html>
