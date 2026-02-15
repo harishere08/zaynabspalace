@@ -108,7 +108,29 @@
 </head>
 <body>
     <div class="background"></div>
-    <div class="scene">
+    <div class="scene"> 
+    
+        <!-- PASSWORD SCREEN -->
+    <div id="password-screen" style="position: absolute; inset: 0; z-index: 9999; background: linear-gradient(#0a1f17, #132d23); display: flex; align-items: center; justify-content: center; flex-direction: column; color: #f0d47c;">
+        <h2 style="font-family: 'Cinzel', serif; font-size: 2.2rem; margin-bottom: 30px; text-shadow: 0 0 20px #d4af37;">
+            Zaynab's Palace
+        </h2>
+        <p style="margin-bottom: 25px; font-size: 1.1rem; opacity: 0.9;">
+            Enter Password to Enter
+        </p>
+        
+        <input type="password" id="password-input" 
+               style="padding: 15px 25px; width: 280px; max-width: 85%; font-size: 1.2rem; border: 3px solid #d4af37; background: #2c1f0f; color: #f0d47c; border-radius: 50px; text-align: center; outline: none;">
+        
+        <button id="password-submit" 
+                style="margin-top: 20px; padding: 12px 50px; background: #d4af37; color: #2c1f0f; border: none; border-radius: 50px; font-family: 'Cinzel', serif; font-size: 1.1rem; cursor: pointer;">
+            Enter
+        </button>
+        
+        <p id="password-error" style="margin-top: 20px; color: #ff6b6b; font-size: 1rem; display: none;">
+            Incorrect Password
+        </p>
+    </div>
 
         <!-- GATE -->
         <div class="gate-wrapper" id="gate-wrapper">
@@ -467,6 +489,46 @@ musicToggle.addEventListener('click', () => {
     }
     isPlaying = !isPlaying;
 });
+
+// ====================== PASSWORD PROTECTION ======================
+const passwordScreen = document.getElementById('password-screen');
+const passwordInput = document.getElementById('password-input');
+const passwordSubmit = document.getElementById('password-submit');
+const passwordError = document.getElementById('password-error');
+
+const correctPassword = "yourpasswordhere";   // ← CHANGE THIS
+
+function checkPassword() {
+    if (passwordInput.value === correctPassword) {
+        passwordScreen.style.transition = "opacity 1.2s ease";
+        passwordScreen.style.opacity = "0";
+        
+        setTimeout(() => {
+            passwordScreen.style.display = "none";
+        }, 1200);
+    } else {
+        passwordError.style.display = "block";
+        passwordInput.style.animation = "shake 0.4s";
+        setTimeout(() => passwordInput.style.animation = "", 500);
+    }
+}
+
+passwordSubmit.addEventListener('click', checkPassword);
+
+passwordInput.addEventListener('keypress', (e) => {
+    if (e.key === "Enter") checkPassword();
+});
+
+// Shake animation
+const style = document.createElement('style');
+style.innerHTML = `
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-8px); }
+        40%, 80% { transform: translateX(8px); }
+    }
+`;
+document.head.appendChild(style);
     </script>
    
 </body>
