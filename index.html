@@ -233,6 +233,16 @@
 
         <div class="signature">From yours truly, Haris</div>
     </div>
+    
+     <!-- Background Music -->
+<audio id="bg-music" loop>
+    <source src="bgmusic.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Music Toggle Button -->
+<button id="music-toggle" style="position: fixed; bottom: 20px; right: 20px; z-index: 100; background: #2c1f0f; color: #d4af37; border: 2px solid #d4af37; width: 50px; height: 50px; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+    ♫
+</button>
 
     <script>
         // Full script (same as the fixed version from before)
@@ -430,6 +440,34 @@ backBtn.addEventListener('click', () => {
         });
 
         document.addEventListener('keydown', e => { if (e.key === 'Enter' && !isOpen) lock.click(); });
+   
+   // Background Music Control
+const bgMusic = document.getElementById('bg-music');
+const musicToggle = document.getElementById('music-toggle');
+
+let isPlaying = false;
+
+// Start music when user clicks the golden lock
+lock.addEventListener('click', () => {
+    if (!isPlaying) {
+        bgMusic.play().catch(() => {});   // handles mobile autoplay restrictions
+        isPlaying = true;
+        musicToggle.textContent = '♪';
+    }
+});
+
+// Toggle music on/off
+musicToggle.addEventListener('click', () => {
+    if (isPlaying) {
+        bgMusic.pause();
+        musicToggle.textContent = '♫';
+    } else {
+        bgMusic.play();
+        musicToggle.textContent = '♪';
+    }
+    isPlaying = !isPlaying;
+});
     </script>
+   
 </body>
 </html>
