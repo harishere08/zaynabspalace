@@ -63,7 +63,7 @@
         .flower-top-right { top: 19%; right: 3%; transform: rotate(22deg); }
         .flower-bottom-left { bottom: 28%; left: 4%; transform: rotate(35deg); }
         .flower-bottom-right { bottom: 25%; right: 9%; transform: rotate(-28deg); }
-        .royal-header { font-family: 'Noto Nastaliq Urdu', serif; font-size: clamp(1.4rem, 4.2vw, 2.3rem)); letter-spacing: 5px; text-shadow: 2px 2px 0 #b8973e, -3px -3px 0 #b8973e, 0 0 30px #000, 0 0 40px rgba(212,175,55,0.4); }
+        .royal-header { font-family: 'Noto Nastaliq Urdu', serif; font-size: clamp(1.4rem, 4.2vw, 2.3rem); letter-spacing: 5px; text-shadow: 2px 2px 0 #b8973e, -3px -3px 0 #b8973e, 0 0 30px #000, 0 0 40px rgba(212,175,55,0.4); }
         .poetry {
     font-family: 'Noto Nastaliq Urdu', serif;
     font-size: clamp(1.45rem, 4.8vw, 2.1rem);
@@ -143,7 +143,7 @@
             Enter Password to Enter
         </p>
         
-        <input type="password" id="password-input" 
+        <input type="password" id="password-input" autocomplete="off"
                style="padding: 15px 25px; width: 280px; max-width: 85%; font-size: 1.2rem; border: 3px solid #d4af37; background: #2c1f0f; color: #f0d47c; border-radius: 50px; text-align: center; outline: none;">
         
         <button id="password-submit" 
@@ -326,6 +326,7 @@
             leftDoor.style.transform = 'rotateY(-115deg)';
             rightDoor.style.transform = 'rotateY(115deg)';
             lock.style.opacity = '0';
+            lock.style.pointerEvents = 'none';
             lock.style.transform = 'translate(-50%,-50%) scale(0.6)';
             setTimeout(() => { welcome.style.opacity = '1'; welcome.style.transform = 'translate(-50%,-50%) scale(1)'; }, 1400);
             setTimeout(() => { welcome.style.opacity = '0'; startPalaceMode(); }, 3900);
@@ -387,10 +388,13 @@
       // ====================== GAME SECTION (fixed) ======================
 function resetGame() {
     document.querySelector('.game-buttons').style.display = 'flex';
+    document.querySelector('.game-question').style.display = 'block';
     successNote.style.display = 'none';
     noBtn.style.position = 'relative';
     noBtn.style.left = '';
     noBtn.style.top = '';
+    noBtn.style.transition = '';
+    noBtn.style.zIndex = '';
 }
 
 function moveNoButton() {
@@ -412,6 +416,7 @@ function moveNoButton() {
 // YES button → show love note
 yesBtn.addEventListener('click', () => {
     document.querySelector('.game-buttons').style.display = 'none';
+    document.querySelector('.game-question').style.display = 'none';
     successNote.style.display = 'block';
 });
 
@@ -436,7 +441,11 @@ backBtn.addEventListener('click', () => {
         leftDoor.style.transform = 'rotateY(0deg)';
         rightDoor.style.transform = 'rotateY(0deg)';
         lock.style.opacity = '1';
+        lock.style.pointerEvents = 'auto';
         lock.style.transform = 'translate(-50%,-50%) scale(1)';
+        // BUG FIX: close any open popup before returning to gate
+        const popupEl = document.querySelector('.popup-photo-container');
+        if (popupEl) popupEl.style.display = 'none';
         backBtn.style.display = 'none';
         palaceContent.style.opacity = '0';
         setTimeout(() => {
@@ -492,19 +501,27 @@ const bgMusic = document.getElementById('bg-music');
 const musicToggle = document.getElementById('music-toggle');
 
 let isPlaying = false;
+let popupShown = false;
 
-        lock.addEventListener('click', () => {
+// BUG FIX: this used to be a SECOND lock click handler with NO isOpen check,
+// which meant popup + music logic re-fired on every click. Added isOpen guard
+// plus a popupShown flag so the welcome popup only appears once per session.
+lock.addEventListener('click', () => {
+    if (isOpen) return;            // guard: don't re-trigger on subsequent clicks
+    // Music (only on first open)
     if (!isPlaying) {
         bgMusic.play().catch(() => {});   // handles mobile autoplay restrictions
         isPlaying = true;
         musicToggle.textContent = '♪';
     }
-    
-    // Show popup photo after gate opens (1.5 seconds delay)
-    setTimeout(() => {
-        const popupContainer = document.querySelector('.popup-photo-container');
-        popupContainer.style.display = 'flex';
-    }, 1500);
+    // Popup photo (only show once per session)
+    if (!popupShown) {
+        setTimeout(() => {
+            const popupEl = document.querySelector('.popup-photo-container');
+            if (popupEl) popupEl.style.display = 'flex';
+            popupShown = true;
+        }, 1500);
+    }
 });
 
 // Popup button functionality
@@ -517,9 +534,13 @@ popupProceedBtn.addEventListener('click', () => {
 });
 
 popupDownloadBtn.addEventListener('click', () => {
+    // BUG FIX: was hardcoded to 'example.png'; now reads from the popup <img> src
+    // so renaming the image later won't desync the download.
+    const photo = document.querySelector('.popup-photo');
+    const imgSrc = photo ? photo.getAttribute('src') : 'example.png';
     const link = document.createElement('a');
-    link.href = 'example.png';
-    link.download = 'example.png';
+    link.href = imgSrc;
+    link.download = imgSrc.split('/').pop();
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -562,7 +583,7 @@ function checkPassword() {
 
 passwordSubmit.addEventListener('click', checkPassword);
 
-passwordInput.addEventListener('keypress', (e) => {
+passwordInput.addEventListener('keydown', (e) => {   // BUG FIX: keypress is deprecated
     if (e.key === "Enter") checkPassword();
 });
 
@@ -576,6 +597,15 @@ style.innerHTML = `
     }
 `;
 document.head.appendChild(style);
+
+// BUG FIX: firefly canvas used to stay at its initial size when the window
+// was resized, leaving fireflies clustered in one corner.
+window.addEventListener('resize', () => {
+    if (canvas && currentMode === 'palace') {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+});
     </script>
    
 </body>
