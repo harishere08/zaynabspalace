@@ -4,6 +4,9 @@
     <title>Zaynab's Palace</title>
     
     <!-- Google Fonts - English + Urdu Nastaleeq -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Great+Vibes&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Great+Vibes&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -11,6 +14,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:wght@700&family=Great+Vibes&display=swap');
 
         * { margin:0; padding:0; box-sizing:border-box; }
+        html, body { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text y='22' font-size='22'>💖</text></svg>") 14 14, auto; }
+        a, button, .menu-btn, .yes-btn, .no-btn, .proceed-btn, #lock, #music-toggle, .gallery-grid img, .pens-grid img { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><text y='22' font-size='22'>💗</text></svg>") 14 14, pointer; }
 
         body {
             height: 100vh; overflow: hidden;
@@ -51,13 +56,38 @@
         .lock { width: 62px; height: 72px; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5)); }
         .welcome { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.6); text-align: center; opacity: 0; transition: all 2s cubic-bezier(0.34,1.56,0.64,1); z-index: 8; color: #f0d47c; text-shadow: 0 0 30px #000; pointer-events: none; }
         .welcome h1 { font-family: 'Great Vibes', cursive; font-size: clamp(2.8rem,9vw,6rem); margin-bottom: 12px; letter-spacing: 4px; }
-        .signature { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); color: #d4af37; font-family: 'Playfair Display', serif; font-size: clamp(0.95rem,3.2vw,1.15rem); letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 3; opacity: 0.9; white-space: nowrap; }
+        .signature { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); color: #d4af37; font-family: 'Playfair Display', serif; font-size: clamp(0.95rem,3.2vw,1.15rem); letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); z-index: 3; opacity: 0.9; white-space: nowrap; pointer-events: none; }
+
+        /* ==================== DAYS COUNTER ==================== */
+        /* Moved to TOP-RIGHT (below star toggle) so it can't collide with the palace
+           content's bottom (proceed button). pointer-events: none so it never blocks clicks. */
+        .days-counter {
+            position: absolute;
+            top: 80px;
+            right: 22px;
+            color: #f0d47c;
+            font-family: 'Playfair Display', serif;
+            text-align: right;
+            z-index: 3;
+            opacity: 0.85;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            pointer-events: none;
+            line-height: 1;
+        }
+        .days-counter .num { font-size: clamp(1.05rem,2.8vw,1.4rem); color: #ffd700; letter-spacing: 2px; display: block; }
+        .days-counter .label { font-size: clamp(0.55rem,1.4vw,0.7rem); letter-spacing: 3px; text-transform: uppercase; opacity: 0.7; margin-top: 4px; }
+
+        /* ==================== CONSTELLATION / STARFIELD ==================== */
+        #star-canvas { position: absolute; inset: 0; z-index: 21; pointer-events: none; display: none; }
+        #star-toggle { position: fixed; top: 18px; right: 18px; z-index: 100; background: #2c1f0f; color: #d4af37; border: 2px solid #d4af37; width: 50px; height: 50px; border-radius: 50%; font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: all 0.3s ease; }
+        #star-toggle:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(212,175,55,0.5); }
+        #star-toggle.active { background: #d4af37; color: #2c1f0f; }
 
         /* ==================== 2nd INTERFACE (Palace) ==================== */
         #back-btn { position: absolute; top: 18px; left: 18px; z-index: 30; background: #2c1f0f; color: #d4af37; border: 2.5px solid #d4af37; padding: 8px 18px; border-radius: 50px; font-family: 'Cinzel', serif; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; transition: all 0.3s ease; }
         #back-btn:hover { background: #d4af37; color: #2c1f0f; transform: scale(1.08); }
         #firefly-canvas { position: absolute; inset: 0; z-index: 20; pointer-events: none; display: none; }
-        .palace-content { position: absolute; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 85px 35px 125px; gap: 38px; color: #f0d47c; transition: opacity 1.8s ease; }
+        .palace-content { position: absolute; inset: 0; z-index: 25; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 85px 35px 60px; gap: 30px; color: #f0d47c; transition: opacity 1.8s ease; overflow-y: auto; }
         .flower-decor { position: absolute; font-size: 52px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)); pointer-events: none; z-index: 26; opacity: 0.85; }
         .flower-top-left { top: 22%; left: 10%; transform: rotate(-15deg); }
         .flower-top-right { top: 19%; right: 3%; transform: rotate(22deg); }
@@ -66,14 +96,17 @@
         .royal-header { font-family: 'Noto Nastaliq Urdu', serif; font-size: clamp(1.4rem, 4.2vw, 2.3rem); letter-spacing: 5px; text-shadow: 2px 2px 0 #b8973e, -3px -3px 0 #b8973e, 0 0 30px #000, 0 0 40px rgba(212,175,55,0.4); }
         .poetry {
     font-family: 'Noto Nastaliq Urdu', serif;
-    font-size: clamp(1.45rem, 4.8vw, 2.1rem);
-    line-height: 2.1;
+    font-size: clamp(1.2rem, 3.8vw, 1.9rem);
+    line-height: 2;
     max-width: 680px;
     text-shadow: 2px 2px 8px #000;
     direction: rtl;           /* Important for Urdu */
     text-align: right;        /* Important for Urdu */
-    margin-bottom: 70px;
+    margin-bottom: 30px;
 }
+.poetry .poetry-line { opacity: 0; transform: translateY(10px); transition: opacity 0.9s ease, transform 0.9s ease; display: block; }
+.poetry .poetry-line.visible { opacity: 1; transform: translateY(0); }
+.poetry .poetry-line.spacer { height: 0.4em; }
         .proceed-btn { background: linear-gradient(#e8c14a,#d4af37); color: #2c1f0f; border: none; padding: 18px 68px; font-family: 'Playfair Display', serif; font-size: 1.45rem; letter-spacing: 3px; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 25px rgba(255,255,255,0.4); transition: all 0.4s ease; }
         .proceed-btn:hover { transform: scale(1.1) translateY(-5px); box-shadow: 0 15px 40px rgba(212,175,55,0.7); }
 
@@ -95,43 +128,51 @@
         .yes-btn { background: linear-gradient(135deg,#4ade80,#22c55e); color: #fff; }
         .yes-btn:hover { transform: scale(1.1); box-shadow: 0 12px 35px rgba(34,197,94,0.6); }
         .no-btn { background: linear-gradient(135deg,#f87171,#ef4444); color: #fff; position: relative; }
-        .success-note { display: none; text-align: center; animation: shine 4s infinite alternate; }
+        /* ==================== LIGHTBOX ==================== */
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(8,18,14,0.94); display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+.lightbox.show { display: flex; }
+.lightbox img { max-width: 92vw; max-height: 84vh; border-radius: 14px; border: 4px solid #d4af37; box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 60px rgba(212,175,55,0.4); animation: lightboxIn 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes lightboxIn { from { opacity:0; transform: scale(0.7); } to { opacity:1; transform: scale(1); } }
+.lightbox-close { position: absolute; top: 22px; right: 22px; background: #2c1f0f; color: #d4af37; border: 2px solid #d4af37; width: 46px; height: 46px; border-radius: 50%; font-size: 22px; cursor: pointer; }
+.lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(44,31,15,0.85); color: #d4af37; border: 2px solid #d4af37; width: 54px; height: 54px; border-radius: 50%; font-size: 22px; cursor: pointer; transition: all 0.25s ease; }
+.lightbox-nav:hover { background: #d4af37; color: #2c1f0f; transform: translateY(-50%) scale(1.1); }
+.lightbox-prev { left: 22px; }
+.lightbox-next { right: 22px; }
+.lightbox-caption { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); color: #f0d47c; font-family: 'Playfair Display', serif; font-size: 0.95rem; letter-spacing: 2px; opacity: 0.85; }
+
+@media (max-width: 600px) {
+    .lightbox-nav { width: 44px; height: 44px; font-size: 18px; }
+    .lightbox-prev { left: 8px; } .lightbox-next { right: 8px; }
+    .lightbox-close { top: 12px; right: 12px; }
+}
+
+.success-note { display: none; text-align: center; animation: shine 4s infinite alternate; }
         .success-note h2 { font-family: 'Great Vibes', cursive; font-size: clamp(3rem,10vw,5.5rem); margin-bottom: 20px; color: #f0d47c; }
         @keyframes shine { 0%{text-shadow:0 0 20px #ffd700,0 0 40px #ffd700} 50%{text-shadow:0 0 30px #ffec8b,0 0 60px #ffec8b,0 0 80px #ffd700} 100%{text-shadow:0 0 25px #ffd700,0 0 50px #ffd700} }
-
-        /* ==================== POPUP PHOTO ==================== */
-        .popup-photo-container { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; pointer-events: none; }
-        .popup-wrapper { display: flex; flex-direction: column; align-items: center; gap: 25px; pointer-events: auto; }
-        .popup-photo { max-width: 600px; max-height: 500px; width: 90vw; height: auto; border: 3px solid #d4af37; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 40px rgba(212,175,55,0.5); animation: popupAppear 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-        @keyframes popupAppear { 0% { opacity: 0; transform: scale(0.3) translateY(50px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
-        .popup-buttons { display: flex; gap: 20px; justify-content: center; }
-        .popup-btn { background: linear-gradient(#e8c14a,#d4af37); color: #2c1f0f; border: none; padding: 14px 45px; font-family: 'Cinzel', serif; font-size: 1.2rem; letter-spacing: 2px; border-radius: 50px; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.6); transition: all 0.3s ease; }
-        .popup-btn:hover { transform: scale(1.08) translateY(-3px); box-shadow: 0 12px 35px rgba(212,175,55,0.7); }
-        .popup-btn:active { transform: scale(0.98); }
-
-        @media (max-width: 600px) {
-            .popup-buttons { flex-direction: column; gap: 15px; width: 100%; padding: 0 20px; }
-            .popup-btn { width: 100%; padding: 14px 30px; font-size: 1.1rem; }
-        }
 
         @media (max-width: 480px) {
             .gallery-grid, .pens-grid { grid-template-columns: 1fr; }
             .game-buttons { gap: 30px; }
             .yes-btn, .no-btn { padding: 18px 45px; font-size: 1.4rem; }
+            .days-counter { top: 76px; right: 14px; }
+            .days-counter .num { font-size: 0.95rem; }
+            .days-counter .label { font-size: 0.5rem; letter-spacing: 2px; }
+            .palace-content { padding: 75px 20px 40px; gap: 22px; }
+            .royal-header { font-size: clamp(1.1rem, 3.6vw, 1.8rem); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            #firefly-canvas, #star-canvas { display: none !important; }
         }
     </style>
 </head>
 <body>
     <div class="background"></div>
-    <div class="popup-photo-container">
-        <div class="popup-wrapper">
-            <img src="example.png" alt="Popup Photo" class="popup-photo">
-            <div class="popup-buttons">
-                <button class="popup-btn" id="popup-proceed">Proceed</button>
-                <button class="popup-btn" id="popup-download">Download</button>
-            </div>
-        </div>
-    </div>
     <div class="scene"> 
     
         <!-- PASSWORD SCREEN -->
@@ -201,7 +242,24 @@
         </div>
 
         <canvas id="firefly-canvas"></canvas>
+        <canvas id="star-canvas"></canvas>
         <button id="back-btn">Back</button>
+        <button id="star-toggle" aria-label="Toggle starfield mode" title="Toggle starfield">✦</button>
+
+        <!-- Days Counter (shown on gate + palace) -->
+        <div class="days-counter" id="days-counter" aria-live="polite">
+            <span class="num" id="days-num">0</span>
+            <span class="label">days since 26 Nov 2024</span>
+        </div>
+
+        <!-- Image Lightbox -->
+        <div class="lightbox" id="lightbox" role="dialog" aria-label="Image preview">
+            <button class="lightbox-close" id="lightbox-close" aria-label="Close">✕</button>
+            <button class="lightbox-nav lightbox-prev" id="lightbox-prev" aria-label="Previous">‹</button>
+            <img id="lightbox-img" src="" alt="">
+            <button class="lightbox-nav lightbox-next" id="lightbox-next" aria-label="Next">›</button>
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
 
         <!-- 2nd Interface -->
         <div class="palace-content" id="palace-content">
@@ -209,17 +267,17 @@
             <span class="flower-decor flower-top-right">🌷</span>
             <span class="flower-decor flower-bottom-left">💐</span>
             <span class="flower-decor flower-bottom-right">🌺</span>
-<h1 class="royal-header" style="font-family: 'Noto Nastaliq Urdu', serif;">اے مرے دل کے شہنشاہ 
+<h1 class="royal-header" style="font-family: 'Noto Nastaliq Urdu', serif;">اے مرے دل کے شہنشاہ
 اے مری آنکھوں کے نور</h1>
-           <div class="poetry">
-   ''آپ کی یاد آتی رہی رات بھر''<br>
-   چاندنی دل دکھاتی رہی رات بھر<br><br>
-    
-   گاہ جلتی ہوئی گاہ بجھتی ہوئی<br>
-  شمع غم جھلملاتی رہی رات بھر<br><br>
-    
-    ایک امید سے دل بہلتا رہا<br>
-   اک تمنا ستاتی رہی رات بھر
+           <div class="poetry" id="poetry">
+   <span class="poetry-line">''آپ کی یاد آتی رہی رات بھر''</span>
+   <span class="poetry-line">چاندنی دل دکھاتی رہی رات بھر</span>
+   <span class="poetry-line spacer"></span>
+   <span class="poetry-line">گاہ جلتی ہوئی گاہ بجھتی ہوئی</span>
+   <span class="poetry-line">شمع غم جھلملاتی رہی رات بھر</span>
+   <span class="poetry-line spacer"></span>
+   <span class="poetry-line">ایک امید سے دل بہلتا رہا</span>
+   <span class="poetry-line">اک تمنا ستاتی رہی رات بھر</span>
 </div>
             <button id="proceed-btn" class="proceed-btn">Proceed</button>
         </div>
@@ -290,6 +348,9 @@
     ♫
 </button>
 
+<!-- Confetti canvas for the Yes-moment burst -->
+<canvas id="confetti-canvas" style="position: fixed; inset: 0; z-index: 150; pointer-events: none;"></canvas>
+
     <script>
         // Full script (same as the fixed version from before)
         const lock = document.getElementById('lock');
@@ -319,6 +380,7 @@
         let currentMode = 'landing';
         let canvas, ctx, fireflies = [];
         let animationFrame;
+        let firefliesActive = false;
 
         lock.addEventListener('click', () => {
             if (isOpen) return;
@@ -330,6 +392,8 @@
             lock.style.transform = 'translate(-50%,-50%) scale(0.6)';
             setTimeout(() => { welcome.style.opacity = '1'; welcome.style.transform = 'translate(-50%,-50%) scale(1)'; }, 1400);
             setTimeout(() => { welcome.style.opacity = '0'; startPalaceMode(); }, 3900);
+            // Start preloading gallery/pens images while user enjoys welcome + fireflies
+            preloadGalleryImages();
         });
 
         function startPalaceMode() {
@@ -342,6 +406,7 @@
             palaceContent.style.opacity = '0';
             setTimeout(() => palaceContent.style.opacity = '1', 100);
             initFireflies();
+            playPoetryAnimation();
         }
 
         function initFireflies() {
@@ -355,10 +420,10 @@
             for (let i = 0; i < 18; i++) {
                 fireflies.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height*0.75, size: Math.random()*3.5+2, speedX: (Math.random()-0.5)*0.8, speedY: (Math.random()-0.5)*0.6, angle: Math.random()*Math.PI*2, flicker: Math.random()*Math.PI*2 });
             }
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-            animateFireflies();
+            setFirefliesActive(true);
         }
         function animateFireflies() {
+            if (!firefliesActive) return;   // PAUSE when not in palace mode
             ctx.clearRect(0,0,canvas.width,canvas.height);
             fireflies.forEach(f => {
                 f.x += Math.cos(f.angle)*1.2 + f.speedX;
@@ -379,6 +444,16 @@
                 ctx.restore();
             });
             animationFrame = requestAnimationFrame(animateFireflies);
+        }
+        function setFirefliesActive(active) {
+            firefliesActive = active;
+            if (active) {
+                if (canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+                animateFireflies();
+            } else if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                if (canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
         }
 
         galleryBtn.addEventListener('click', () => { thirdContent.style.opacity = '0'; setTimeout(() => { thirdContent.style.display = 'none'; galleryContent.style.display = 'flex'; galleryContent.style.opacity = '1'; currentMode = 'gallery'; }, 800); });
@@ -413,11 +488,13 @@ function moveNoButton() {
     noBtn.style.zIndex = '50';
 }
 
-// YES button → show love note
+// YES button → show love note + confetti burst + heart shower
 yesBtn.addEventListener('click', () => {
     document.querySelector('.game-buttons').style.display = 'none';
     document.querySelector('.game-question').style.display = 'none';
     successNote.style.display = 'block';
+    launchConfetti();
+    heartShower();
 });
 
 // NO button → runs away (desktop + mobile)
@@ -444,20 +521,18 @@ backBtn.addEventListener('click', () => {
         lock.style.pointerEvents = 'auto';
         lock.style.transform = 'translate(-50%,-50%) scale(1)';
         // BUG FIX: close any open popup before returning to gate
-        const popupEl = document.querySelector('.popup-photo-container');
-        if (popupEl) popupEl.style.display = 'none';
         backBtn.style.display = 'none';
         palaceContent.style.opacity = '0';
         setTimeout(() => {
             palaceContent.style.display = 'none';
             fireflyCanvas.style.display = 'none';
-            if (animationFrame) cancelAnimationFrame(animationFrame);
+            setFirefliesActive(false);   // PAUSE fireflies instead of just cancelling
         }, 1700);
         document.body.style.background = 'linear-gradient(to bottom, #0f2b1e, #1a3a28)';
         bgImage.style.opacity = '1';
         gateWrapper.style.opacity = '1';
         currentMode = 'landing';
-    } 
+    }
     else if (currentMode === 'menu') {
         // ← NEW: back from menu to poetry screen
         thirdContent.style.opacity = '0';
@@ -468,9 +543,10 @@ backBtn.addEventListener('click', () => {
             fireflyCanvas.style.display = 'block';
             fireflyCanvas.style.opacity = '1';
             initFireflies();
+            setFirefliesActive(true);    // RESUME fireflies
             currentMode = 'palace';
         }, 1000);
-    } 
+    }
     else if (['gallery','pens','game'].includes(currentMode)) {
         if (currentMode === 'game') resetGame();
         const currentEl = document.getElementById(currentMode + '-content');
@@ -501,49 +577,15 @@ const bgMusic = document.getElementById('bg-music');
 const musicToggle = document.getElementById('music-toggle');
 
 let isPlaying = false;
-let popupShown = false;
 
-// BUG FIX: this used to be a SECOND lock click handler with NO isOpen check,
-// which meant popup + music logic re-fired on every click. Added isOpen guard
-// plus a popupShown flag so the welcome popup only appears once per session.
+// Music control only — gate animation is handled in the primary lock handler at the top of the script.
 lock.addEventListener('click', () => {
     if (isOpen) return;            // guard: don't re-trigger on subsequent clicks
-    // Music (only on first open)
     if (!isPlaying) {
         bgMusic.play().catch(() => {});   // handles mobile autoplay restrictions
         isPlaying = true;
         musicToggle.textContent = '♪';
     }
-    // Popup photo (only show once per session)
-    if (!popupShown) {
-        setTimeout(() => {
-            const popupEl = document.querySelector('.popup-photo-container');
-            if (popupEl) popupEl.style.display = 'flex';
-            popupShown = true;
-        }, 1500);
-    }
-});
-
-// Popup button functionality
-const popupProceedBtn = document.getElementById('popup-proceed');
-const popupDownloadBtn = document.getElementById('popup-download');
-const popupContainer = document.querySelector('.popup-photo-container');
-
-popupProceedBtn.addEventListener('click', () => {
-    popupContainer.style.display = 'none';
-});
-
-popupDownloadBtn.addEventListener('click', () => {
-    // BUG FIX: was hardcoded to 'example.png'; now reads from the popup <img> src
-    // so renaming the image later won't desync the download.
-    const photo = document.querySelector('.popup-photo');
-    const imgSrc = photo ? photo.getAttribute('src') : 'example.png';
-    const link = document.createElement('a');
-    link.href = imgSrc;
-    link.download = imgSrc.split('/').pop();
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 });
 
 // Toggle music on/off
@@ -605,7 +647,296 @@ window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
+    if (starCtx && starCanvas.style.display === 'block') {
+        starCanvas.width = window.innerWidth;
+        starCanvas.height = window.innerHeight;
+        drawStarfield();
+    }
 });
+
+// ====================== DAYS COUNTER ======================
+const daysNum = document.getElementById('days-num');
+const daysCounter = document.getElementById('days-counter');
+const RELATIONSHIP_START = new Date('2024-11-26T00:00:00');
+
+function updateDaysCounter() {
+    const now = new Date();
+    const diffMs = now - RELATIONSHIP_START;
+    const days = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    if (daysNum) daysNum.textContent = days.toLocaleString();
+}
+// Show counter on gate (landing) and on palace screen; hide elsewhere
+const _origStartPalaceMode = startPalaceMode;
+startPalaceMode = function() {
+    _origStartPalaceMode();
+    daysCounter.style.display = 'block';
+};
+const _origBackPalace = backBtn.onclick; // not strictly needed; we handle via currentMode
+function refreshDaysCounterVisibility() {
+    // Signature only belongs on the gate screen — hide it once she's inside the palace
+    const signature = document.querySelector('.signature');
+    if (currentMode === 'landing') {
+        daysCounter.style.display = 'block';
+        if (signature) signature.style.display = 'block';
+    } else if (currentMode === 'palace') {
+        daysCounter.style.display = 'block';
+        if (signature) signature.style.display = 'none';
+    } else {
+        daysCounter.style.display = 'none';
+        if (signature) signature.style.display = 'none';
+    }
+}
+updateDaysCounter();
+setInterval(updateDaysCounter, 60000);   // refresh every minute (in case she leaves it open)
+
+// ====================== POETRY TYPING ANIMATION ======================
+function playPoetryAnimation() {
+    const lines = document.querySelectorAll('#poetry .poetry-line');
+    lines.forEach((line, i) => {
+        setTimeout(() => line.classList.add('visible'), 800 + i * 700);
+    });
+}
+
+// ====================== IMAGE PRELOAD ======================
+function preloadGalleryImages() {
+    const sources = [
+        'zaynab1.jpg','zaynab2.jpg','zaynab3.jpg','zaynab4.jpg',
+        'zaynab5.jpg','zaynab6.jpg','zaynab7.jpg','zaynab8.jpg',
+        'pen1.jpg','pen2.jpg','pen3.jpg','pen4.jpg','pen5.jpg','pen6.jpg','pen7.jpg'
+    ];
+    sources.forEach(src => { const img = new Image(); img.src = src; });
+}
+
+// ====================== LIGHTBOX ======================
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxCaption = document.getElementById('lightbox-caption');
+const lightboxClose = document.getElementById('lightbox-close');
+const lightboxPrev = document.getElementById('lightbox-prev');
+const lightboxNext = document.getElementById('lightbox-next');
+let lightboxImages = [];
+let lightboxIndex = 0;
+
+function openLightbox(images, startIndex) {
+    lightboxImages = images;
+    lightboxIndex = startIndex;
+    updateLightboxImage();
+    lightbox.classList.add('show');
+    setFirefliesActive(false);   // pause background animation while viewing
+}
+function updateLightboxImage() {
+    const item = lightboxImages[lightboxIndex];
+    if (!item) return;
+    lightboxImg.src = item.src;
+    lightboxImg.alt = item.alt || '';
+    lightboxCaption.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length + (item.caption ? '  ·  ' + item.caption : '');
+}
+function closeLightbox() {
+    lightbox.classList.remove('show');
+    if (currentMode === 'palace') setFirefliesActive(true);
+}
+function lightboxNav(delta) {
+    lightboxIndex = (lightboxIndex + delta + lightboxImages.length) % lightboxImages.length;
+    updateLightboxImage();
+}
+lightboxClose.addEventListener('click', closeLightbox);
+lightboxPrev.addEventListener('click', () => lightboxNav(-1));
+lightboxNext.addEventListener('click', () => lightboxNav(1));
+lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('show')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+});
+
+// Wire up gallery & pens images to the lightbox
+function bindGridToLightbox(gridSelector, captions) {
+    const imgs = document.querySelectorAll(gridSelector + ' img');
+    imgs.forEach((img, i) => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => {
+            const list = Array.from(imgs).map((el, idx) => ({
+                src: el.getAttribute('src'),
+                alt: el.getAttribute('alt') || '',
+                caption: captions && captions[idx] ? captions[idx] : ''
+            }));
+            openLightbox(list, i);
+        });
+    });
+}
+bindGridToLightbox('.gallery-grid');
+bindGridToLightbox('.pens-grid');
+
+// ====================== CONFETTI + HEART SHOWER ======================
+const confettiCanvas = document.getElementById('confetti-canvas');
+const confettiCtx = confettiCanvas.getContext('2d');
+function sizeConfetti() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+}
+sizeConfetti();
+window.addEventListener('resize', sizeConfetti);
+
+function launchConfetti() {
+    const colors = ['#ffd700','#ff7eb9','#ff4d6d','#fff3b0','#d4af37','#ffb3c6'];
+    const particles = [];
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    for (let i = 0; i < 140; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 8 + 4;
+        particles.push({
+            x: cx, y: cy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 4,
+            size: Math.random() * 6 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 0.3,
+            life: 1,
+            shape: Math.random() < 0.4 ? 'heart' : 'rect'
+        });
+    }
+    let start = null;
+    function frame(ts) {
+        if (!start) start = ts;
+        const dt = Math.min(40, ts - start) / 16.67;
+        confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        let alive = 0;
+        particles.forEach(p => {
+            p.vy += 0.25 * dt;
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.rotation += p.rotationSpeed * dt;
+            p.life -= 0.008 * dt;
+            if (p.life > 0 && p.y < confettiCanvas.height + 50) {
+                alive++;
+                confettiCtx.save();
+                confettiCtx.globalAlpha = Math.max(0, p.life);
+                confettiCtx.translate(p.x, p.y);
+                confettiCtx.rotate(p.rotation);
+                confettiCtx.fillStyle = p.color;
+                if (p.shape === 'heart') {
+                    confettiCtx.font = (p.size * 2.5) + 'px serif';
+                    confettiCtx.fillText('❤', -p.size, p.size / 2);
+                } else {
+                    confettiCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.6);
+                }
+                confettiCtx.restore();
+            }
+        });
+        if (alive > 0) requestAnimationFrame(frame);
+        else confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    }
+    requestAnimationFrame(frame);
+}
+
+function heartShower() {
+    const emojis = ['💖','💕','💗','💝','🌹','✨'];
+    for (let i = 0; i < 28; i++) {
+        const el = document.createElement('div');
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.cssText = `
+            position: fixed;
+            left: ${Math.random() * 100}vw;
+            top: -40px;
+            font-size: ${Math.random() * 18 + 18}px;
+            z-index: 151;
+            pointer-events: none;
+            transition: transform ${Math.random() * 2 + 3}s ease-in, opacity ${Math.random() * 2 + 3}s ease-in;
+        `;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => {
+            el.style.transform = `translateY(${window.innerHeight + 80}px) rotate(${Math.random() * 720 - 360}deg)`;
+            el.style.opacity = '0';
+        });
+        setTimeout(() => el.remove(), 6000);
+    }
+}
+
+// ====================== CONSTELLATION / STARFIELD MODE ======================
+const starCanvas = document.getElementById('star-canvas');
+const starCtx = starCanvas.getContext('2d');
+const starToggle = document.getElementById('star-toggle');
+let stars = [];
+let starModeActive = false;
+let starAnimFrame;
+
+function buildStars(count) {
+    stars = [];
+    for (let i = 0; i < count; i++) {
+        stars.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            z: Math.random() * 0.8 + 0.2,           // depth (parallax factor)
+            r: Math.random() * 1.4 + 0.3,
+            twinkle: Math.random() * Math.PI * 2,
+            twinkleSpeed: Math.random() * 0.04 + 0.01
+        });
+    }
+}
+
+function drawStarfield() {
+    starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+    stars.forEach(s => {
+        s.twinkle += s.twinkleSpeed;
+        const alpha = (Math.sin(s.twinkle) + 1) / 2 * 0.85 + 0.15;
+        starCtx.save();
+        starCtx.globalAlpha = alpha;
+        starCtx.fillStyle = '#ffffff';
+        starCtx.shadowBlur = 8;
+        starCtx.shadowColor = '#b8d4ff';
+        starCtx.beginPath();
+        starCtx.arc(s.x, s.y, s.r * s.z, 0, Math.PI * 2);
+        starCtx.fill();
+        starCtx.restore();
+    });
+}
+
+function animateStarfield() {
+    if (!starModeActive) return;
+    // slow drift
+    stars.forEach(s => {
+        s.y += 0.05 * s.z;
+        if (s.y > starCanvas.height + 5) { s.y = -5; s.x = Math.random() * starCanvas.width; }
+    });
+    drawStarfield();
+    starAnimFrame = requestAnimationFrame(animateStarfield);
+}
+
+starToggle.addEventListener('click', () => {
+    starModeActive = !starModeActive;
+    if (starModeActive) {
+        starCanvas.width = window.innerWidth;
+        starCanvas.height = window.innerHeight;
+        buildStars(220);
+        starCanvas.style.display = 'block';
+        starToggle.classList.add('active');
+        animateStarfield();
+    } else {
+        starCanvas.style.display = 'none';
+        starToggle.classList.remove('active');
+        if (starAnimFrame) cancelAnimationFrame(starAnimFrame);
+        starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+    }
+});
+
+// ESC key goes back to the previous screen
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (lightbox.classList.contains('show')) { closeLightbox(); return; }
+        if (['gallery','pens','game','menu','palace'].includes(currentMode)) backBtn.click();
+    }
+});
+
+// Keep days-counter visibility in sync with mode changes
+const _origGallery = galleryBtn.onclick;
+galleryBtn.addEventListener('click', () => { refreshDaysCounterVisibility(); }, true);
+pensBtn.addEventListener('click', () => { refreshDaysCounterVisibility(); }, true);
+gameBtn.addEventListener('click', () => { refreshDaysCounterVisibility(); }, true);
+backBtn.addEventListener('click', () => { setTimeout(refreshDaysCounterVisibility, 1100); }, true);
+refreshDaysCounterVisibility();
     </script>
    
 </body>
